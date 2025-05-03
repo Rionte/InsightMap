@@ -240,13 +240,6 @@ price_min_combo.currentIndexChanged.connect(on_price_min_changed)
 price_max_combo.currentIndexChanged.connect(on_price_max_changed)
 
 # ----------- COMMENTS -----------
-comment_label = QLabel("Other Comments:")
-form_layout.addWidget(comment_label)
-
-comment_box = QTextEdit()
-comment_box.setMinimumHeight(100)
-form_layout.addWidget(comment_box)
-
 search_button = QPushButton("🔍 Search Now")
 form_layout.addWidget(search_button)
 
@@ -267,10 +260,10 @@ window.setLayout(main_layout)
 
 # ----------- LOGIC -----------
 sub_options = {
-    "Restaurants": ["Italian", "BBQ", "Vegan", "Fast Food", "Mexican", "Chinese", "Desserts", "Other (Add in Comments)"],
+    "Restaurants": ["Italian", "BBQ", "Vegan", "Fast Food", "Mexican", "Chinese", "Desserts"],
     "Hotels": ["1 Person", "2 People", "3 or More People"],
     "Auto Services": ["Repair", "Maintenance", "Detailing", "Car Wash"],
-    "Personal Care": ["Massage", "Haircut", "Gym", "Other (Add in Comments)"]
+    "Personal Care": ["Massage", "Haircut", "Gym"]
 }
 
 def update_subtypes(index):
@@ -282,6 +275,20 @@ def update_subtypes(index):
 def update_distance(val):
     distance_label.setText(f"Maximum Distance: {val} km")
 
+# Add a results text area below the map
+results_text = QTextEdit()
+results_text.setReadOnly(True)
+results_text.setMinimumHeight(150)
+results_text.setVisible(False)  # Hide initially
+
+# Modify your layout
+map_layout = QVBoxLayout()
+map_layout.addWidget(map_view)
+map_layout.addWidget(results_text)
+
+main_layout.addWidget(scroll_area, 2)
+main_layout.addLayout(map_layout, 3)
+
 def run_search():
     category = type_combo.currentText()
     subtype = subtype_combo.currentText()
@@ -290,7 +297,6 @@ def run_search():
     price_min = price_min_combo.currentIndex()
     price_max = price_max_combo.currentIndex()
     address = address_box.toPlainText()
-    comments = comment_box.toPlainText()
 
     # Map UI category to actual place type
     place_types = {
@@ -322,22 +328,29 @@ def run_search():
                 rand_lat = random_place['geometry']['location']['lat']
                 rand_lng = random_place['geometry']['location']['lng']
 
-                # Print place info to console
-                print("\n--- Selected Place ---")
-                print(f"Name: {random_place.get('name')}")
-                print(f"Address: {random_place.get('vicinity')}")
-                print(f"Rating: {random_place.get('rating')}")
-                print(f"Price Level: {random_place.get('price_level')}")
-                print(f"Types: {', '.join(random_place.get('types', []))}")
-                print(f"Location: {rand_lat}, {rand_lng}")
-                print("----------------------\n")
+                # Display place info in the results text area
+                place_info = f"""
+                <h2>📍 {random_place.get('name', 'N/A')}</h2>
+                <p><b>📌 Address:</b> {random_place.get('vicinity', 'N/A')}</p>
+                <p><b>⭐ Rating:</b> {random_place.get('rating', 'N/A')}/5</p>
+                <p><b>💰 Price Level:</b> {"$" * random_place.get('price_level', 0) or 'N/A'}</p>
+                <p><b>🔖 Types:</b> {', '.join(random_place.get('types', []))}</p>
+                """
+                
+                results_text.setHtml(place_info)
+                results_text.setVisible(True)
 
+                # Update map
                 map_url = f"https://www.openstreetmap.org/?mlat={rand_lat}&mlon={rand_lng}#map=15/{rand_lat}/{rand_lng}"
                 map_view.setUrl(QUrl(map_url))
             else:
+                results_text.setHtml("<p>No places found matching your criteria.</p>")
+                results_text.setVisible(True)
                 print("No places found matching the criteria.")
 
     except Exception as e:
+        results_text.setHtml(f"<p>Error during search: {str(e)}</p>")
+        results_text.setVisible(True)
         print(f"Error during search: {str(e)}")
 
 type_combo.currentIndexChanged.connect(update_subtypes)
