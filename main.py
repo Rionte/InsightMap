@@ -261,7 +261,7 @@ window.setLayout(main_layout)
 # ----------- LOGIC -----------
 sub_options = {
     "Restaurants": ["Italian", "BBQ", "Vegan", "Fast Food", "Mexican", "Chinese", "Desserts"],
-    "Hotels": ["1 Person", "2 People", "3 or More People"],
+    "Hotels": ["Budget", "Luxury", "Spa"],
     "Auto Services": ["Repair", "Maintenance", "Detailing", "Car Wash"],
     "Personal Care": ["Massage", "Haircut", "Gym"]
 }
