@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
 # Initialize Google Maps client
-gmaps = googlemaps.Client(key='AIzaSyCRHFRwTKaJkSJdUDSR9tIXb3iquFrfVSE')
+gmaps = googlemaps.Client(key='ADD YOUR API KEY HERE')
 # Initialize Ollama client
 
 class StarLabel(QLabel):
@@ -35,21 +35,22 @@ window.setWindowTitle("InsightMap")
 window.setWindowIcon(QIcon('map.ico'))
 window.setStyleSheet("""
     QWidget {
-        background-color: #ffffff;
+        background-color: #121212;
         font-family: 'Segoe UI', 'Inter', sans-serif;
         font-size: 16px;
+        color: #e0e0e0;
     }
 
     QLabel {
-        color: #212529;
+        color: #e0e0e0;
         font-size: 20px;
         margin: 8px 0;
     }
 
     QComboBox {
-        background-color: #ffffff;
-        color: #212529;
-        border: 1px solid #ced4da;
+        background-color: #1e1e1e;
+        color: #ffffff;
+        border: 1px solid #444;
         border-radius: 6px;
         padding: 8px;
         font-size: 17px;
@@ -57,35 +58,35 @@ window.setStyleSheet("""
     }
 
     QComboBox QAbstractItemView {
-        background-color: #ffffff;
-        color: #212529;
-        border: 1px solid #dee2e6;
+        background-color: #1e1e1e;
+        color: #ffffff;
+        border: 1px solid #444;
     }
 
     QComboBox:hover, QComboBox:focus {
-        border: 1px solid #339af0;
+        border: 1px solid #64b5f6;
     }
 
     QSlider::groove:horizontal {
-    background: #dee2e6;
-    height: 6px;
-    border-radius: 3px;
+        background: #333;
+        height: 6px;
+        border-radius: 3px;
     }
 
     QSlider::sub-page:horizontal {
-        background: #339af0;  /* Blue filled part */
+        background: #64b5f6;
         height: 6px;
         border-radius: 3px;
     }
 
     QSlider::add-page:horizontal {
-        background: #dee2e6;  /* Grey remaining part */
+        background: #333;
         height: 6px;
         border-radius: 3px;
     }
 
     QSlider::handle:horizontal {
-        background: #339af0;
+        background: #64b5f6;
         border: none;
         height: 16px;
         width: 16px;
@@ -94,7 +95,7 @@ window.setStyleSheet("""
     }
 
     QPushButton {
-        background-color: #339af0;
+        background-color: #1e88e5;
         color: #ffffff;
         font-size: 18px;
         font-weight: 600;
@@ -105,38 +106,36 @@ window.setStyleSheet("""
     }
 
     QPushButton:hover {
-        background-color: #1c7ed6;
+        background-color: #1565c0;
     }
 
     QTextEdit {
-        color: black;
+        background-color: #1e1e1e;
+        color: #e0e0e0;
         font-size: 17px;
-        border: 1px solid #000000;
+        border: 1px solid #444;
         border-radius: 6px;
         padding: 8px;
-        background-color: #ffffff;
     }
 
     QTextEdit:hover {
-        background:rgb(239, 239, 239);
-        color:rgb(0, 0, 0);
+        background: #2c2c2c;
     }
 
     QScrollBar:vertical {
         border: none;
-        background: #f1f3f5;
+        background: #1e1e1e;
         width: 12px;
-        margin: 0px;
     }
 
     QScrollBar::handle:vertical {
-        background: #339af0;
+        background: #64b5f6;
         border-radius: 6px;
         min-height: 20px;
     }
 
     QScrollBar::handle:vertical:hover {
-        background: #1c7ed6;
+        background: #42a5f5;
     }
 
     QScrollBar::add-line:vertical,
@@ -157,7 +156,18 @@ form_layout.setContentsMargins(40, 40, 20, 40)
 address_label = QLabel("📍 Address or Location (Address, City):")
 form_layout.addWidget(address_label)
 address_box = QTextEdit()
-address_box.setMinimumHeight(60)
+address_box.setFixedHeight(44)
+address_box.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+address_box.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+address_box.setStyleSheet("""
+    QTextEdit {
+        padding: 10px;
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+        border: 1px solid #444;
+        border-radius: 6px;
+    }
+""")
 form_layout.addWidget(address_box)
 
 # ----------- SERVICE TYPE -----------
@@ -251,6 +261,16 @@ scroll_area.setFrameShape(QFrame.NoFrame)
 
 # ----------- MAP VIEW -----------
 map_view = QWebEngineView()
+map_view.setHtml("""
+    <html style="background-color:#121212; color:#aaa;">
+        <body style="display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background-color:#121212;font-family:sans-serif;">
+            <div style="text-align:center;">
+                <h2>🗺️ Map and Result will appear here</h2>
+                <p>Search for a location to display it.</p>
+            </div>
+        </body>
+    </html>
+""")
 map_view.setMinimumSize(600, 400)
 
 # ----------- FINAL LAYOUT -----------
